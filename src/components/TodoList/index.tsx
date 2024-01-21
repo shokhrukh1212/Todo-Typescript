@@ -146,13 +146,18 @@ const TodoList: React.FC<Todos> = ({
         )}
       </Grid>
 
+      {/* Custom modal for creating or updating a todo item */}
       <CustomModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
         <Box component="form" sx={modalStyle} noValidate autoComplete="off">
           <Typography
             id="modal-modal-title"
             variant="h4"
             component="h4"
-            style={{ alignSelf: "center", marginBottom: 15 }}
+            style={{
+              alignSelf: "center",
+              marginBottom: 15,
+              fontFamily: "'Play', sans-serif",
+            }}
           >
             {editableItemID ? "EDIT YOUR TODO !!!" : "ADD NEW TODO !!!"}
           </Typography>

@@ -13,6 +13,7 @@ import { Todo } from "../../types/common";
 import toastMessage from "../../utils/toastMessage";
 import { modalStyle } from "../../constants";
 import fetchData from "../../utils/fetchData";
+import "../../assets/css/fonts.css";
 
 const TodoItem: React.FC<TodoPiece> = ({
   todo,
@@ -63,7 +64,12 @@ const TodoItem: React.FC<TodoPiece> = ({
     <Grid item key={todo.id} xs={12} sm={6} md={4}>
       <Card>
         <CardContent sx={{ flexGrow: 1 }}>
-          <Typography gutterBottom variant="h5" component="h2">
+          <Typography
+            gutterBottom
+            variant="h5"
+            component="h2"
+            sx={{ fontFamily: "Ubuntu, sans-serif" }}
+          >
             {todo.title}
           </Typography>
           <Divider light />
@@ -75,41 +81,47 @@ const TodoItem: React.FC<TodoPiece> = ({
               overflowY: "auto",
               pt: 1,
               mb: 2,
+              fontFamily: "Sevillana, cursive",
             }}
           >
             {todo.description}
           </Typography>
 
-          <Typography>
+          <Typography sx={{ fontFamily: "Prompt, sans-serif" }}>
             Created by: <b>{todo.createdBy.toUpperCase()}</b>
           </Typography>
         </CardContent>
-        {todo.isEditable && (
-          <CardActions>
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={() => handleEdit(todo.id)}
-            >
-              Edit
-            </Button>
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
-            >
-              Delete
-            </Button>
-          </CardActions>
-        )}
+        <CardActions>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => handleEdit(todo.id)}
+            disabled={!todo.isEditable}
+          >
+            Edit
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            disabled={!todo.isEditable}
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+          >
+            Delete
+          </Button>
+        </CardActions>
       </Card>
 
       {/* Our custom modal to delete a todo item */}
       <CustomModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
         <Box sx={modalStyle}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            sx={{ fontFamily: "'Play', sans-serif" }}
+          >
             Are you sure you want to delete?
           </Typography>
           <Box sx={{ alignSelf: "flex-end", paddingRight: 5, paddingTop: 2 }}>

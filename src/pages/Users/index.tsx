@@ -11,6 +11,8 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import fetchData from "../../utils/fetchData";
 import { User } from "../../types/common";
+import "../../assets/css/fonts.css";
+import LoaderComponent from "../../components/Loader";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -29,12 +31,15 @@ const darkTheme = createTheme({
 
 const Users = () => {
   const [users, setUsers] = useState<User[]>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   // fetching all users list
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        setIsLoading(true);
+
         const res = await fetchData("GET", "users");
         if (res.status === 200) {
           const newUsers = res.data.map((user: User) => {
@@ -47,7 +52,11 @@ const Users = () => {
 
           setUsers(newUsers);
         }
-      } catch (error) {}
+      } catch (error: any) {
+        throw new Error(error.message);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchUsers();
@@ -57,6 +66,8 @@ const Users = () => {
   const handleGoHome = () => {
     navigate("/");
   };
+
+  if (isLoading) return <LoaderComponent />;
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -98,10 +109,22 @@ const Users = () => {
                   }}
                 >
                   <Stack spacing={2} direction="row" alignItems="center">
-                    <Avatar sx={{ width: 80, height: 80, color: "#fff" }}>
+                    <Avatar
+                      sx={{
+                        width: 80,
+                        height: 80,
+                        color: "#fff",
+                        fontFamily: "Space Grotesk, sans-serif",
+                      }}
+                    >
                       {role.toUpperCase()}
                     </Avatar>
-                    <Typography variant="h6">{name}</Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontFamily: "Dosis, sans-serif" }}
+                    >
+                      {name}
+                    </Typography>
                   </Stack>
                 </Item>
               );

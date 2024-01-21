@@ -20,12 +20,14 @@ import { Todo } from "../../types/common";
 import TodoList from "../../components/TodoList";
 import ErrorBoundaryComponent from "../../components/ErrorBoundary";
 import { modalStyle } from "../../constants";
+import LoaderComponent from "../../components/Loader";
 
 const defaultTheme = createTheme();
 
 const Main = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { userData, setUserData } = useContext(MyContext);
   const [todos, setTodos] = useState<Todo[]>([]);
 
@@ -35,6 +37,7 @@ const Main = () => {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
+        setIsLoading(true);
         const res = await fetchData("GET", "todos");
 
         if (res.status === 200) {
@@ -62,6 +65,8 @@ const Main = () => {
         }
       } catch (error: any) {
         throw new Error(error.message);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -93,7 +98,7 @@ const Main = () => {
 
   // handling navigating to users page
   const handleUsers = () => {
-    navigate("/users");
+    navigate("/users", { replace: true });
   };
 
   // handling cancel for modal
@@ -105,6 +110,8 @@ const Main = () => {
   const handleAddTodo = () => {
     setIsAddModalOpen(true);
   };
+
+  if (isLoading) return <LoaderComponent />;
 
   return (
     <ErrorBoundaryComponent>
@@ -125,10 +132,11 @@ const Main = () => {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                fontFamily: "Josefin Sans, sans-serif",
               }}
             >
-              <FormatListNumberedRtlOutlinedIcon sx={{ mr: 2 }} />
-              TODO List
+              <FormatListNumberedRtlOutlinedIcon sx={{ mr: 1 }} />
+              TODO LIST
             </Typography>
 
             <Box
@@ -141,7 +149,11 @@ const Main = () => {
                 setIsModalOpen(true);
               }}
             >
-              <Typography variant="h6" color="inherit" sx={{ marginRight: 1 }}>
+              <Typography
+                variant="h6"
+                color="inherit"
+                sx={{ marginRight: 1, fontFamily: "Josefin Sans, sans-serif" }}
+              >
                 Logout
               </Typography>
               <LogoutIcon />
@@ -163,6 +175,7 @@ const Main = () => {
                 align="center"
                 color="text.primary"
                 gutterBottom
+                sx={{ fontFamily: "Josefin Sans, sans-serif" }}
               >
                 TODO LIST
               </Typography>
@@ -171,6 +184,7 @@ const Main = () => {
                 align="center"
                 color="text.secondary"
                 paragraph
+                sx={{ fontFamily: "Ubuntu, sans-serif" }}
               >
                 Stay organized with our intuitive <b>TODO list app</b>.
                 Effortlessly manage tasks, set priorities, and boost
@@ -182,12 +196,25 @@ const Main = () => {
                 spacing={2}
                 justifyContent="center"
               >
-                <Button variant="contained" onClick={handleAddTodo}>
-                  <AddCircleOutlineOutlinedIcon sx={{ mr: 1, fontSize: 30 }} />
+                <Button
+                  variant="contained"
+                  onClick={handleAddTodo}
+                  sx={{ fontFamily: "Josefin Sans, sans-serif" }}
+                >
+                  <AddCircleOutlineOutlinedIcon
+                    sx={{
+                      mr: 1,
+                      fontSize: 30,
+                    }}
+                  />
                   add new todo
                 </Button>
                 {userData.role === "admin" && (
-                  <Button variant="outlined" onClick={handleUsers}>
+                  <Button
+                    variant="outlined"
+                    onClick={handleUsers}
+                    sx={{ fontFamily: "Josefin Sans, sans-serif" }}
+                  >
                     <PeopleIcon sx={{ mr: 1, fontSize: 30 }} />
                     users list
                   </Button>
@@ -210,7 +237,12 @@ const Main = () => {
             setIsModalOpen={setIsModalOpen}
           >
             <Box sx={modalStyle}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
+              <Typography
+                id="modal-modal-title"
+                variant="h6"
+                component="h2"
+                sx={{ fontFamily: "'Play', sans-serif" }}
+              >
                 Are you sure you want to logout?
               </Typography>
               <Box

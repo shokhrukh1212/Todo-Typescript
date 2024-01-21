@@ -1,4 +1,3 @@
-
 import Modal from "@mui/material/Modal";
 import { CustomModalProps } from "../../types/common";
 
@@ -7,7 +6,6 @@ const CustomModal: React.FC<CustomModalProps> = ({
   setIsModalOpen,
   children,
 }) => {
-
   // handling modal close
   const handleClose = () => {
     setIsModalOpen(false);
@@ -20,7 +18,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-      >
+        >
         {children}
       </Modal>
     </div>
