@@ -77,8 +77,7 @@ const Users = () => {
         </Typography>
         <Box
           sx={{
-            // width: "100%",
-            height: 500,
+            minHeight: 300,
             display: "flex",
             alignItems: "center",
             flexDirection: "column",
@@ -108,7 +107,9 @@ const Users = () => {
               );
             })
           ) : (
-            <Typography variant="h3">NO AVAILABLE USERS</Typography>
+            <Typography variant="h5" sx={{ textAlign: "center", marginTop: 5 }}>
+              NO AVAILABLE USERS, TRY TO REFRESH THE PAGE OR ADD USERS
+            </Typography>
           )}
         </Box>
 

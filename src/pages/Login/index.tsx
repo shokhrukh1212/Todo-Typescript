@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -8,34 +8,38 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { MyContext } from "../../MyContext";
 import { useNavigate } from "react-router-dom";
 import fetchData from "../../utils/fetchData";
-import { MyContext } from "../../MyContext";
 import toastMessage from "../../utils/toastMessage";
 
 const defaultTheme = createTheme();
 
 const Login = () => {
-  const navigate = useNavigate();
+  const [login, setLogin] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [isClicked, setIsClicked] = useState<boolean>(false);
   const { setUserData } = useContext(MyContext);
+  const navigate = useNavigate();
 
   // handling submit while logging in
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
 
-    // getting login and password data for login
-    const body = {
-      login: data.get("login"),
-      password: data.get("password"),
-    };
+    setIsClicked(true);
 
-    const res = await fetchData("POST", "login", body);
+    if (login.length > 0 && password.length > 0) {
+      const body = {
+        login,
+        password,
+      };
+      const res = await fetchData("POST", "login", body);
 
-    if (res.status === 200) {
-      toastMessage("success");
-      setUserData(res.data);
-      navigate("/");
+      if (res.status === 200) {
+        toastMessage("success");
+        setUserData(res.data);
+        navigate("/");
+      }
     }
   };
 
@@ -72,6 +76,11 @@ const Login = () => {
               name="login"
               autoComplete="login"
               autoFocus
+              onChange={(e) => setLogin(e.target.value)}
+              error={isClicked && login.length === 0}
+              helperText={
+                isClicked && login.length === 0 ? "Invalid login" : ""
+              }
             />
             <TextField
               margin="normal"
@@ -82,6 +91,11 @@ const Login = () => {
               type={"password"}
               id="password"
               autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
+              error={isClicked && password.length === 0}
+              helperText={
+                isClicked && password.length === 0 ? "Invalid password" : ""
+              }
             />
             <Button
               type="submit"

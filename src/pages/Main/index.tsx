@@ -1,4 +1,5 @@
-import { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
 import FormatListNumberedRtlOutlinedIcon from "@mui/icons-material/FormatListNumberedRtlOutlined";
@@ -13,7 +14,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CustomModal from "../../components/Modal";
-import { useNavigate } from "react-router-dom";
 import fetchData from "../../utils/fetchData";
 import { MyContext } from "../../MyContext";
 import { Todo } from "../../types/common";
@@ -46,7 +46,15 @@ const Main = () => {
               title,
               description,
               createdBy,
-              isEditable: userData.role === "admin" ? true : false,
+
+              // if the user is ADMIN, he can edit and delete all items, otherwise if the user is a USER
+              // he can only edit delete items created by USER, otherwise, can't edit and delete
+              isEditable:
+                userData.role === "admin"
+                  ? true
+                  : createdBy === "admin"
+                  ? false
+                  : true,
             };
           });
 
@@ -227,4 +235,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default React.memo(Main);

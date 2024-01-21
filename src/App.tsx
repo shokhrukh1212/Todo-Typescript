@@ -44,10 +44,7 @@ function App() {
           path="/"
           element={userData.role ? <Main /> : <Navigate to="/login" />}
         />
-        <Route
-          path="/login"
-          element={!userData.role ? <Login /> : <Navigate to="/" />}
-        />
+        <Route path="/login" element={userData.role ? <Main /> : <Login />} />
         <Route path="/users" element={<Users />} />
       </>
     )

@@ -19,7 +19,6 @@ const fetchData = async (method: string, subdirectory: string, body?: any) => {
 
     // if res ok status is not ok
     if (!res.ok) {
-
       // if the user is UNAUTHORIZED, must login again
       if (res.status === 401) {
         toastMessage("error", res.statusText);
