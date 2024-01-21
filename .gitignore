@@ -6,7 +6,7 @@
 .pnp.js
 
 # backend server
-.exe
+win.exe
 
 # testing
 /coverage
