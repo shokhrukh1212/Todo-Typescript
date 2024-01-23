@@ -26,6 +26,7 @@ const TodoList: React.FC<Todos> = ({
 
   // handling todo save and edit
   const handleSave = async () => {
+    // setIsLoading(true);
     await handleSaveEdit({
       setIsLoading,
       setIsModalOpen,

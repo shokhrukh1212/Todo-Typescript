@@ -107,7 +107,7 @@ export const handleSaveEdit = async ({
         setDescription("");
         setIsModalOpen(false);
       } else {
-        setIsModalOpen(false);
+        setIsModalOpen(true);
       }
 
       // need to set id null again as it will affect later

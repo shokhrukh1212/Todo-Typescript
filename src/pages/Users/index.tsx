@@ -43,6 +43,8 @@ const Users = () => {
     fetchUsers();
   }, []);
 
+  
+
   // handling navigating to home page
   const handleGoHome = () => {
     navigate("/");

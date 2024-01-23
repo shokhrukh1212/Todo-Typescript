@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Main = lazy(() => import("./pages/Main"));
 const Login = lazy(() => import("./pages/Login"));
 const Users = lazy(() => import("./pages/Users"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 function App() {
   const [userData, setUserData] = useState<User>({ name: "", role: "" });
@@ -44,8 +45,21 @@ function App() {
           path="/"
           element={userData.role ? <Main /> : <Navigate to="/login" />}
         />
-        <Route path="/login" element={userData.role ? <Main /> : <Login />} />
-        <Route path="/users" element={<Users />} />
+        <Route
+          path="/login"
+          element={!userData.role ? <Login /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/users"
+          element={
+            userData.role === "admin" ? <Users /> : <Navigate to="/not-found" />
+          }
+        />
+
+        <Route
+          path="/not-found"
+          element={userData.role ? <NotFound /> : <Navigate to="/login" />}
+        />
       </>
     )
   );
