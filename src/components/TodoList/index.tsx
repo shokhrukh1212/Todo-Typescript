@@ -8,10 +8,8 @@ import Container from "@mui/material/Container";
 import CustomModal from "../Modal";
 import TodoItem from "../Todo";
 import { Todos, Todo } from "../../types/common";
-import fetchData from "../../utils/fetchData";
-import toastMessage from "../../utils/toastMessage";
 import { modalStyle } from "../../constants";
-import { EditTodoFunction } from "../../types/common";
+import { handleSaveEdit, handleSetBeforeEdit } from "../../utils/api";
 
 const TodoList: React.FC<Todos> = ({
   todos,
@@ -28,74 +26,17 @@ const TodoList: React.FC<Todos> = ({
 
   // handling todo save and edit
   const handleSave = async () => {
-    try {
-      setIsLoading(true);
-
-      const body = {
-        title,
-        description,
-      };
-
-      // which means, if we are creating an item
-      if (editableItemID === null) {
-        const res = await fetchData("POST", "todos", body);
-        if (res.status === 201) {
-          const { id, title, description, createdBy } = res.data;
-          setTodos((todos: Todo[]) => {
-            return [
-              ...todos,
-              {
-                id,
-                title,
-                description,
-                createdBy,
-                isEditable: true,
-              },
-            ];
-          });
-
-          toastMessage("success");
-
-          setTitle("");
-          setDescription("");
-          setIsModalOpen(false);
-        }
-      }
-
-      // which means, we are updating a specific item
-      else {
-        const res = await fetchData("PUT", `todos/${editableItemID}`, body);
-        if (res.status === 204) {
-          setTodos((lastTodos: Todo[]) => {
-            return lastTodos.map((item) => {
-              if (item.id === editableItemID) {
-                return {
-                  ...item,
-                  title,
-                  description,
-                };
-              } else {
-                return item;
-              }
-            });
-          });
-
-          toastMessage("success");
-          setTitle("");
-          setDescription("");
-          setIsModalOpen(false);
-        } else {
-          setIsModalOpen(false);
-        }
-
-        // need to set id null again as it will affect later
-        setEditableItemID(null);
-      }
-    } catch (error: any) {
-      toastMessage("error", error.message);
-    } finally {
-      setIsLoading(false);
-    }
+    await handleSaveEdit({
+      setIsLoading,
+      setIsModalOpen,
+      setEditableItemID,
+      setDescription,
+      setTitle,
+      setTodos,
+      editableItemID,
+      title,
+      description,
+    });
   };
 
   // handling modal cancel
@@ -106,23 +47,15 @@ const TodoList: React.FC<Todos> = ({
   };
 
   // handle edit todo item, no more than getting todo data and opening modal
-  const handleEditTodoItem: EditTodoFunction = async (id: number) => {
-    try {
-      setIsLoading(true);
-      const resItem = await fetchData("GET", `todos/${id}`);
-      if (resItem.status === 200) {
-        setTitle(resItem.data.title);
-        setDescription(resItem.data.description);
-        setEditableItemID(id);
-      } else {
-        setIsModalOpen(false);
-        setEditableItemID(null);
-      }
-    } catch (error: any) {
-      throw new Error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleEditTodoItem = async (id: number) => {
+    await handleSetBeforeEdit({
+      setIsLoading,
+      setTitle,
+      setDescription,
+      setIsModalOpen,
+      setEditableItemID,
+      todoID: id,
+    });
   };
 
   return (

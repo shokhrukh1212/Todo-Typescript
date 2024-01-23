@@ -9,10 +9,8 @@ import Divider from "@mui/material/Divider";
 import { TodoPiece } from "../../types/common";
 import CustomModal from "../Modal";
 import { Box } from "@mui/material";
-import { Todo } from "../../types/common";
-import toastMessage from "../../utils/toastMessage";
 import { modalStyle } from "../../constants";
-import fetchData from "../../utils/fetchData";
+import { handleDeleteTodoItem } from "../../utils/api";
 import "../../assets/css/fonts.css";
 
 const TodoItem: React.FC<TodoPiece> = ({
@@ -26,24 +24,12 @@ const TodoItem: React.FC<TodoPiece> = ({
 
   // handle delete todo item
   const handleDelete = async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetchData("DELETE", `todos/${todo.id}`);
-
-      // updating todos list
-      if (res.status === 204) {
-        setTodos((lastTodos: Todo[]) => {
-          return lastTodos.filter((item) => item.id !== todo.id);
-        });
-
-        toastMessage("success");
-        setIsModalOpen(false);
-      }
-    } catch (error: any) {
-      throw new Error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
+    await handleDeleteTodoItem({
+      setIsLoading,
+      setTodos,
+      setIsModalOpen,
+      todo,
+    });
   };
 
   // handle close modal

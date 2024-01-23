@@ -9,10 +9,10 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
-import fetchData from "../../utils/fetchData";
 import { User } from "../../types/common";
 import "../../assets/css/fonts.css";
 import LoaderComponent from "../../components/Loader";
+import { fetchUsersList } from "../../utils/api";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -37,26 +37,7 @@ const Users = () => {
   // fetching all users list
   useEffect(() => {
     const fetchUsers = async () => {
-      try {
-        setIsLoading(true);
-
-        const res = await fetchData("GET", "users");
-        if (res.status === 200) {
-          const newUsers = res.data.map((user: User) => {
-            const { name, role } = user;
-            return {
-              name,
-              role,
-            };
-          });
-
-          setUsers(newUsers);
-        }
-      } catch (error: any) {
-        throw new Error(error.message);
-      } finally {
-        setIsLoading(false);
-      }
+      await fetchUsersList({ setIsLoading, setUsers });
     };
 
     fetchUsers();

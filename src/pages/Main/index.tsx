@@ -14,13 +14,13 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CustomModal from "../../components/Modal";
-import fetchData from "../../utils/fetchData";
 import { MyContext } from "../../MyContext";
 import { Todo } from "../../types/common";
 import TodoList from "../../components/TodoList";
 import ErrorBoundaryComponent from "../../components/ErrorBoundary";
 import { modalStyle } from "../../constants";
 import LoaderComponent from "../../components/Loader";
+import { fetchTodosList, handleUserLogout } from "../../utils/api";
 
 const defaultTheme = createTheme();
 
@@ -36,38 +36,7 @@ const Main = () => {
   // fetching todos
   useEffect(() => {
     const fetchTodos = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetchData("GET", "todos");
-
-        if (res.status === 200) {
-          const newTodos = res.data.map((card: Todo) => {
-            const { id, title, description, createdBy } = card;
-            return {
-              key: id,
-              id,
-              title,
-              description,
-              createdBy,
-
-              // if the user is ADMIN, he can edit and delete all items, otherwise if the user is a USER
-              // he can only edit delete items created by USER, otherwise, can't edit and delete
-              isEditable:
-                userData.role === "admin"
-                  ? true
-                  : createdBy === "admin"
-                  ? false
-                  : true,
-            };
-          });
-
-          setTodos(newTodos);
-        }
-      } catch (error: any) {
-        throw new Error(error.message);
-      } finally {
-        setIsLoading(false);
-      }
+      await fetchTodosList({ setIsLoading, setTodos, userData });
     };
 
     fetchTodos();
@@ -75,25 +44,7 @@ const Main = () => {
 
   // handling logout
   const handleLogout = async () => {
-    try {
-      const res = await fetch("http://localhost:3000/api/v1/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (res.status === 200) {
-        setIsModalOpen(false);
-        setUserData({ name: "", role: "" });
-        sessionStorage.clear();
-      } else {
-        setIsModalOpen(false);
-      }
-    } catch (error: any) {
-      throw new Error(error.message);
-    }
+    await handleUserLogout({ setIsModalOpen, setUserData });
   };
 
   // handling navigating to users page
